@@ -39,27 +39,26 @@ public class CarManagerFrontEnd extends JFrame {
             updateDisplay();
         });
         addBtn.addActionListener(e -> {
+            JTextField make = new JTextField();
             JTextField model = new JTextField();
             JTextField year = new JTextField();
             JTextField price = new JTextField();
 
             Object[] fields = {
-                "Model:", model,
-                "Year:", year,
-                "Price:", price
+                    "Make:", make,
+                    "Model:", model,
+                    "Year:", year,
+                    "Price:", price
             };
 
             int result = JOptionPane.showConfirmDialog(null, fields, "Add Car", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                system.addCar(model.getText(),
-                        Integer.parseInt(year.getText()),
-                        Integer.parseInt(price.getText()));
-                updateDisplay();
+                system.addCar(make.getText(), model.getText(), Integer.parseInt(year.getText()), Integer.parseInt(price.getText())); updateDisplay();
             }
         });
 
-        system.addCar("Toyota Corolla", 2020, 60);
-        system.addCar("Honda Civic", 2019, 55);
+        system.addCar("Toyota" , "Corolla", 2020, 60);
+        system.addCar("Honda" ,  "Civic", 2019, 55);
         updateDisplay();
 
         setVisible(true);
@@ -68,7 +67,7 @@ public class CarManagerFrontEnd extends JFrame {
     public void updateDisplay() {
         listModel.clear();
         for (int i = 0; i < system.getCars().size(); i++) {
-            listModel.addElement(i + ". " + system.getCars().get(i));
+            listModel.addElement((i + 1) + ". " + system.getCars().get(i));
         }
     }
 

@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class CarManagerSystem {
     private ArrayList<Car> cars = new ArrayList<>();
 
-    public void addCar(String make, int year, int price) {
-        cars.add(new Car(make, year, price));
+    public void addCar(String make, String model, int year, int price) {
+        cars.add(new Car(make, model, year, price));
     }
 
     public void rentCar(int index) {
@@ -12,7 +12,7 @@ public class CarManagerSystem {
             Car c = cars.get(index);
             if (c.isAvailable()) {
                 c.setAvailable(false);
-                System.out.println("Car rented: " + c.getMakeModel());
+                System.out.println("Car rented: " + c.getMake() + c.getModel());
             } else {
                 System.out.println("Car is not available.");
             }
@@ -23,7 +23,7 @@ public class CarManagerSystem {
         if (index >= 0 && index < cars.size()) {
             Car c = cars.get(index);
             c.setAvailable(true);
-            System.out.println("Car returned: " + c.getMakeModel());
+            System.out.println("Car returned: " + c.getMake() + c.getModel());
         }
     }
 

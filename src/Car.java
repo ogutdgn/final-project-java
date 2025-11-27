@@ -1,18 +1,23 @@
 public class Car {
-    private String makeModel;
+    private String make;
+    private String model;
     private int manufactureYear;
     private int price;
     private boolean available;
 
-    public Car(String makeModel, int manufactureYear, int price) {
-        this.makeModel = makeModel;
+    public Car(String make, String model, int manufactureYear, int price) {
+        this.make = make;
+        this.model = model;
         this.manufactureYear = manufactureYear;
         this.price = price;
         this.available = true;
     }
 
-    public String getMakeModel() {
-        return makeModel;
+    public String getMake() {
+        return make;
+    }
+    public String getModel() {
+        return model;
     }
 
     public int getManufactureYear() {
@@ -36,10 +41,10 @@ public class Car {
     }
 
     public void drive() {
-        System.out.println(makeModel + " is driving...");
+        System.out.println(make + model + " is driving...");
     }
 
     public String toString() {
-        return makeModel + " (" + manufactureYear + ") - $" + price + " | Available: " + available;
+        return make + " " + model + " (" + manufactureYear + ") - $" + price + " | Available: " + available;
     }
 }
