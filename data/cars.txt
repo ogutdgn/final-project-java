@@ -2,4 +2,5 @@ Toyota|Corolla|ABC-1234|2020|60|true|NONE|NONE
 Honda|Civic|XYZ-5678|2019|55|true|NONE|NONE
 BMW|3 Series|BMW-9012|2022|120|true|NONE|NONE
 Mercedes-Benz|C-Class|MER-3456|2021|150|true|NONE|NONE
-Nissan|Sentra|AMD2143|2010|50|true|john_doe|NONE
+Nissan|Sentra|AMD2143|2010|50|true|NONE|NONE
+Volkswagen|Jetta|POL2021|2021|67|true|john_doe|NONE

@@ -178,8 +178,8 @@ public class MainFrame extends JFrame {
         gbc.gridwidth = 1;
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        JTextField makeField = new JTextField(25);
-        JTextField modelField = new JTextField(25);
+        JComboBox<CarMake> makeBox = new JComboBox<>(CarMake.values());
+        JComboBox<String> modelBox = new JComboBox<>();
         JTextField plateField = new JTextField(25);
         JTextField yearField = new JTextField(25);
         JTextField priceField = new JTextField(25);
@@ -189,13 +189,13 @@ public class MainFrame extends JFrame {
         gbc.gridx = 0;
         panel.add(createLabel("Make:"), gbc);
         gbc.gridx = 1;
-        panel.add(makeField, gbc);
+        panel.add(makeBox, gbc);
 
         gbc.gridy = row++;
         gbc.gridx = 0;
         panel.add(createLabel("Model:"), gbc);
         gbc.gridx = 1;
-        panel.add(modelField, gbc);
+        panel.add(modelBox, gbc);
 
         gbc.gridy = row++;
         gbc.gridx = 0;
@@ -221,6 +221,43 @@ public class MainFrame extends JFrame {
         gbc.insets = new Insets(30, 10, 10, 10);
         JButton addBtn = createStyledButton("Add Car", new Color(155, 89, 182));
         addBtn.setPreferredSize(new Dimension(200, 45));
+
+        // Populate modelBox when make changes
+        makeBox.addActionListener(e -> {
+            modelBox.removeAllItems();
+
+            Object sel = makeBox.getSelectedItem();
+            if (!(sel instanceof CarMake)) {
+                // User typed a custom make → allow typing model too
+                makeBox.setEditable(true);
+                modelBox.setEditable(true);
+                modelBox.addItem("");
+                return; // stop — don't cast
+            }
+
+            CarMake selected = (CarMake) sel;
+
+
+            if (selected != null) {
+                for (String m : selected.getModels()) {
+                    modelBox.addItem(m);
+                }
+
+                // If user selects Other → allow typing make + model
+                if (selected == CarMake.Other) {
+                    makeBox.setEditable(true);   // allow typing custom make
+                    modelBox.setEditable(true);  // allow typing custom model
+                    modelBox.addItem("");        // blank option for model
+                } else {
+                    makeBox.setEditable(false);  // lock typing for normal makes
+                    modelBox.setEditable(false); // lock typing for normal models
+                }
+            }
+        });
+
+
+        JTextField customMake = new JTextField(25);
+        JTextField customModel = new JTextField(25);
         addBtn.addActionListener(e -> {
             if (!customerService.isLoggedIn()) {
                 showError("Please login first to add a car!");
@@ -229,28 +266,50 @@ public class MainFrame extends JFrame {
             }
 
             try {
-                String make = makeField.getText().trim();
-                String model = modelField.getText().trim();
+                Object sel = makeBox.getSelectedItem();
+                String make = "";
+
+                if (sel instanceof CarMake) {
+                    make = ((CarMake) sel).toString();  // predefined enum
+                } else if (sel != null) {
+                    make = sel.toString();              // user-typed string
+                }
+
+
+                String model;
+                if (modelBox.isEditable()) {
+                    // user typed a custom model for "Other"
+                    model = modelBox.getEditor().getItem().toString().trim();
+                } else {
+                    model = (String) modelBox.getSelectedItem();
+                }
+
                 String plate = plateField.getText().trim();
                 int year = Integer.parseInt(yearField.getText().trim());
                 int price = Integer.parseInt(priceField.getText().trim());
 
-                if (model.isEmpty() || plate.isEmpty()) {
+                if (model == null || model.isEmpty() || plate.isEmpty()) {
                     showError("Model and Plate Number cannot be empty!");
                     return;
                 }
 
                 carService.addCar(make, model, plate, year, price, customerService.getLoggedInCustomer());
-                modelField.setText("");
+
+                // Reset after adding
+                modelBox.removeAllItems();
+                makeBox.setSelectedIndex(0);
                 plateField.setText("");
                 yearField.setText("");
                 priceField.setText("");
+
                 updateAllTabs();
                 showSuccess("Car added successfully!");
+
             } catch (NumberFormatException ex) {
                 showError("Please enter valid numbers for year and price!");
             }
         });
+
         panel.add(addBtn, gbc);
 
         return panel;
@@ -625,6 +684,6 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainFrame());
+        SwingUtilities.invokeLater(MainFrame::new);
     }
 }
