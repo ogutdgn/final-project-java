@@ -223,37 +223,52 @@ public class MainFrame extends JFrame {
         addBtn.setPreferredSize(new Dimension(200, 45));
 
         // Populate modelBox when make changes
+// When make changes
         makeBox.addActionListener(e -> {
             modelBox.removeAllItems();
 
             Object sel = makeBox.getSelectedItem();
-            if (!(sel instanceof CarMake)) {
-                // User typed a custom make → allow typing model too
-                makeBox.setEditable(true);
-                modelBox.setEditable(true);
-                modelBox.addItem("");
-                return; // stop — don't cast
-            }
-
-            CarMake selected = (CarMake) sel;
-
+            CarMake selected = sel instanceof CarMake ? (CarMake) sel : null;
 
             if (selected != null) {
-                for (String m : selected.getModels()) {
-                    modelBox.addItem(m);
-                }
-
-                // If user selects Other → allow typing make + model
                 if (selected == CarMake.Other) {
-                    makeBox.setEditable(true);   // allow typing custom make
-                    modelBox.setEditable(true);  // allow typing custom model
-                    modelBox.addItem("");        // blank option for model
+                    makeBox.setEditable(true);
+                    modelBox.setEditable(true);
+                    modelBox.addItem(""); // blank option for custom model
                 } else {
-                    makeBox.setEditable(false);  // lock typing for normal makes
-                    modelBox.setEditable(false); // lock typing for normal models
+                    makeBox.setEditable(false);
+
+                    // Add all predefined models
+                    for (String m : selected.getModels()) {
+                        modelBox.addItem(m);
+                    }
+
+                    // Add blank at top so user can type a new model
+                    modelBox.insertItemAt("", 0);
+                    modelBox.setSelectedIndex(0);
+
+                    // Editable only if blank selected
+                    modelBox.setEditable(true);
                 }
+            } else {
+                makeBox.setEditable(true);
+                modelBox.setEditable(true);
+                modelBox.addItem(""); // fallback
             }
         });
+
+// Single listener for modelBox to lock typing on predefined models
+        modelBox.addActionListener(e -> {
+            Object item = modelBox.getSelectedItem();
+            if (item != null && !"".equals(item.toString())) {
+                modelBox.setEditable(false); // lock if not blank
+            } else {
+                modelBox.setEditable(true);  // editable if blank
+            }
+        });
+
+
+
 
 
         JTextField customMake = new JTextField(25);

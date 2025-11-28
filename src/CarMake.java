@@ -1,6 +1,6 @@
 public enum CarMake {
     Toyota(new String[]{"Corolla", "Camry", "RAV4", "Tacoma", "Tundra", "Highlander", "Prius"}),
-    Honda(new String[]{"Civic", "Accord", "CR-V", "HR-V", "Pilot", "Ridgeline", "Odyssey" }),
+    Honda(new String[]{"Civic", "Accord", "CR-V", "HR-V", "Pilot", "Ridgeline", "Odyssey"}),
     Nissan(new String[]{"Altima", "Sentra", "Rogue", "Frontier", "Pathfinder", "Leaf", "Maxima"}),
     Ford(new String[]{"Fusion", "Mustang", "Escape", "F-150", "Ranger", "Explorer", "Expedition"}),
     Chevrolet(new String[]{"Silverado", "Colorado", "Camaro", "Corvette", "Tahoe", "Malibu", "Equinox"}),
