@@ -1,0 +1,6 @@
+Toyota Corolla|ABC-1234|2020|60|false|john_doe|NONE
+Honda Civic|XYZ-5678|2019|55|true|john_doe|NONE
+BMW 3 Series|BMW-9012|2022|120|true|john_doe|NONE
+Mercedes-Benz C-Class|MER-3456|2021|150|true|ogutdgn|NONE
+prius|12331|2008|123345|true|ogutdgn|NONE
+test|123234|2005|300|true|ogutdgn|NONE

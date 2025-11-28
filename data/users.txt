@@ -1,0 +1,6 @@
+john_doe|pass123|John|Doe|john@email.com|1234567890|DL123456
+jane_smith|pass456|Jane|Smith|jane@email.com|0987654321|DL789012
+mike_wilson|pass789|Mike|Wilson|mike@email.com|5551234567|DL345678
+sarah_jones|pass321|Sarah|Jones|sarah@email.com|5559876543|DL901234
+david_brown|pass654|David|Brown|david@email.com|5555551234|DL567890
+ogutdgn|123321123|Dogan|Ogut|ogutdgn@gmail.com|9455465406|RHY8053
