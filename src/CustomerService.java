@@ -9,6 +9,16 @@ public class CustomerService {
         loadCustomers();
     }
 
+    public Customer findCustomerByUsername(String username) {
+        for (Customer c : customers) {
+            if (c.getUsername().equalsIgnoreCase(username)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+
     private void loadCustomers() {
         customers.clear();
         customers.addAll(DataManager.loadUsers());

@@ -121,8 +121,9 @@ public class DataManager {
                     carData.year = Integer.parseInt(parts[3]);
                     carData.price = Integer.parseInt(parts[4]);
                     carData.available = Boolean.parseBoolean(parts[5]);
-                    carData.ownerUsername = parts.length > 5 && !parts[6].equals("NONE") ? parts[5] : null;
-                    carData.renterUsername = parts.length > 6 && !parts[7].equals("NONE") ? parts[6] : null;
+                    carData.ownerUsername = parts.length > 6 && !parts[6].equals("NONE") ? parts[6] : null;
+                    carData.renterUsername = parts.length > 7 && !parts[7].equals("NONE") ? parts[7] : null;
+
                     carsData.add(carData);
                 }
             }

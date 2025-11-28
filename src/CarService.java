@@ -26,7 +26,15 @@ public class CarService {
                 renter = usernameToCustomer.get(carData.renterUsername);
             }
 
-            Car car = new Car(carData.make, carData.model, carData.plateNumber, carData.year, carData.price, owner);
+            Car car = new Car(
+                    carData.make,
+                    carData.model,
+                    carData.plateNumber,
+                    carData.year,
+                    carData.price,
+                    owner
+            );
+
             car.setAvailable(carData.available);
             car.setRenter(renter);
             cars.add(car);

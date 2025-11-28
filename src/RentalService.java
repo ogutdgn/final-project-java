@@ -4,10 +4,38 @@ import java.util.List;
 
 public class RentalService {
     private ArrayList<Rental> rentals = new ArrayList<>();
+    private CarService carService;
+
+    public RentalService(CarService carService) {
+        this.carService = carService;
+    }
+
+    public void reconstructRentals() {
+        rentals.clear();
+        for (Car car : carService.getAllCars()) {
+            // If the car is NOT available and has a renter, it means it's currently rented
+            if (!car.isAvailable() && car.getRenter() != null) {
+                // We create a new Rental object to track it.
+                // Note: Since we don't save the exact start date in this minimal version,
+                // we default to today (LocalDate.now()).
+                Rental rental = new Rental(car, car.getRenter(), LocalDate.now());
+                rentals.add(rental);
+            }
+        }
+    }
+
+
+
 
     public Rental createRental(Car car, Customer customer) {
+
+        car.setAvailable(false);
+        car.setRenter(customer);
+
+
         Rental rental = new Rental(car, customer, LocalDate.now());
         rentals.add(rental);
+
         System.out.println("Rental created: " + customer.getFullName() + " rented " + car.getMake() + " " + car.getModel());
         return rental;
     }
@@ -15,6 +43,10 @@ public class RentalService {
     public void completeRental(Rental rental) {
         rental.completeRental(LocalDate.now());
         rental.getCar().setAvailable(true);
+
+        Car car = rental.getCar();
+        car.setAvailable(true);
+        car.setRenter(null);
     }
 
     public List<Rental> getAllRentals() {

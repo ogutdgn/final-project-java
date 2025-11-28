@@ -4,7 +4,7 @@ import java.awt.*;
 public class MainFrame extends JFrame {
     private final CarService carService = new CarService();
     private final CustomerService customerService = new CustomerService();
-    private final RentalService rentalService = new RentalService();
+    private final RentalService rentalService = new RentalService(carService);
 
     private JLabel userLabel;
 
@@ -47,6 +47,8 @@ public class MainFrame extends JFrame {
 
         carService.setCustomerMap(customerMap);
         carService.loadCars();
+
+        rentalService.reconstructRentals();
 
         if (carService.getCarCount() == 0) {
             carService.addCar("Toyota", "Corolla", "ABC-1234", 2020, 60);
