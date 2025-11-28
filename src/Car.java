@@ -1,14 +1,17 @@
+
 public class Car {
-    private String makeModel;
+    private final String make;
+    private final String model;
     private String plateNumber;
-    private int manufactureYear;
-    private int price;
+    private final int manufactureYear;
+    private final int price;
     private boolean available;
     private Customer owner;
     private Customer renter;
 
-    public Car(String makeModel, String plateNumber, int manufactureYear, int price) {
-        this.makeModel = makeModel;
+    public Car(String make, String model, String plateNumber, int manufactureYear, int price) {
+        this.make = make;
+        this.model = model;
         this.plateNumber = plateNumber;
         this.manufactureYear = manufactureYear;
         this.price = price;
@@ -16,9 +19,10 @@ public class Car {
         this.owner = null;
         this.renter = null;
     }
-    
-    public Car(String makeModel, String plateNumber, int manufactureYear, int price, Customer owner) {
-        this.makeModel = makeModel;
+
+    public Car(String make, String model, String plateNumber, int manufactureYear, int price, Customer owner) {
+        this.make = make;
+        this.model = model;
         this.plateNumber = plateNumber;
         this.manufactureYear = manufactureYear;
         this.price = price;
@@ -27,8 +31,11 @@ public class Car {
         this.renter = null;
     }
 
-    public String getMakeModel() {
-        return makeModel;
+    public String getMake() {
+        return make;
+    }
+    public String getModel() {
+        return model;
     }
 
     public String getPlateNumber() {
@@ -76,7 +83,7 @@ public class Car {
     }
 
     public void drive() {
-        System.out.println(makeModel + " is driving...");
+        System.out.println(make + " " + model + " is driving...");
     }
 
     @Override
@@ -89,6 +96,6 @@ public class Car {
         } else {
             status = "⊘ Not Available";
         }
-        return makeModel + " [" + plateNumber + "] (" + manufactureYear + ") - $" + price + "/day | " + status;
+        return make + " " + model + " [" + plateNumber + "] (" + manufactureYear + ") - $" + price + "/day | " + status;
     }
 }

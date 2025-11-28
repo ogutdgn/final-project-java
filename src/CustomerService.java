@@ -4,22 +4,22 @@ import java.util.List;
 public class CustomerService {
     private ArrayList<Customer> customers = new ArrayList<>();
     private Customer loggedInCustomer = null;
-    
+
     public CustomerService() {
         loadCustomers();
     }
-    
+
     private void loadCustomers() {
         customers.clear();
         customers.addAll(DataManager.loadUsers());
     }
-    
+
     private void saveCustomers() {
         DataManager.saveUsers(customers);
     }
 
-    public void registerCustomer(String username, String password, String firstName, String lastName, 
-                                String email, String phone, String licenseNumber) throws InvalidInputException {
+    public void registerCustomer(String username, String password, String firstName, String lastName,
+                                 String email, String phone, String licenseNumber) throws InvalidInputException {
         for (Customer customer : customers) {
             if (customer.getUsername().equalsIgnoreCase(username)) {
                 throw new InvalidInputException("Username already exists!");
@@ -46,8 +46,8 @@ public class CustomerService {
 
     public Customer login(String username, String password) throws InvalidInputException {
         for (Customer customer : customers) {
-            if (customer.getUsername().equalsIgnoreCase(username) && 
-                customer.getPassword().equals(password)) {
+            if (customer.getUsername().equalsIgnoreCase(username) &&
+                    customer.getPassword().equals(password)) {
                 loggedInCustomer = customer;
                 return customer;
             }
@@ -67,8 +67,8 @@ public class CustomerService {
         return loggedInCustomer != null;
     }
 
-    public void updateProfile(String firstName, String lastName, String email, 
-                             String phone, String licenseNumber) throws InvalidInputException {
+    public void updateProfile(String firstName, String lastName, String email,
+                              String phone, String licenseNumber) throws InvalidInputException {
         if (loggedInCustomer == null) {
             throw new InvalidInputException("No user logged in!");
         }

@@ -6,44 +6,44 @@ import java.util.HashMap;
 public class CarService {
     private ArrayList<Car> cars = new ArrayList<>();
     private Map<String, Customer> usernameToCustomer = new HashMap<>();
-    
+
     public void setCustomerMap(Map<String, Customer> customerMap) {
         this.usernameToCustomer = customerMap;
     }
-    
+
     public void loadCars() {
         cars.clear();
         List<DataManager.CarData> carsData = DataManager.loadCars();
-        
+
         for (DataManager.CarData carData : carsData) {
             Customer owner = null;
             if (carData.ownerUsername != null && usernameToCustomer.containsKey(carData.ownerUsername)) {
                 owner = usernameToCustomer.get(carData.ownerUsername);
             }
-            
+
             Customer renter = null;
             if (carData.renterUsername != null && usernameToCustomer.containsKey(carData.renterUsername)) {
                 renter = usernameToCustomer.get(carData.renterUsername);
             }
-            
-            Car car = new Car(carData.makeModel, carData.plateNumber, carData.year, carData.price, owner);
+
+            Car car = new Car(carData.make, carData.model, carData.plateNumber, carData.year, carData.price, owner);
             car.setAvailable(carData.available);
             car.setRenter(renter);
             cars.add(car);
         }
     }
-    
+
     private void saveCars() {
         DataManager.saveCars(cars);
     }
 
-    public void addCar(String makeModel, String plateNumber, int year, int price) {
-        cars.add(new Car(makeModel, plateNumber, year, price));
+    public void addCar(String make, String model, String plateNumber, int year, int price) {
+        cars.add(new Car(make, model, plateNumber, year, price));
         saveCars();
     }
-    
-    public void addCar(String makeModel, String plateNumber, int year, int price, Customer owner) {
-        cars.add(new Car(makeModel, plateNumber, year, price, owner));
+
+    public void addCar(String make, String model, String plateNumber, int year, int price, Customer owner) {
+        cars.add(new Car(make, model, plateNumber, year, price, owner));
         saveCars();
     }
 
@@ -58,10 +58,10 @@ public class CarService {
                 car.setAvailable(false);
                 car.setRenter(renter);
                 saveCars();
-                System.out.println("Car rented: " + car.getMakeModel());
+                System.out.println("Car rented: " + car.getMake() + " " + car.getModel());
                 return car;
             } else {
-                throw new CarNotAvailableException("Car is not available: " + car.getMakeModel());
+                throw new CarNotAvailableException("Car is not available: " + car.getMake() + " " + car.getModel());
             }
         }
         throw new CarNotAvailableException("Invalid car index");
@@ -73,7 +73,7 @@ public class CarService {
             car.setAvailable(true);
             car.setRenter(null);
             saveCars();
-            System.out.println("Car returned: " + car.getMakeModel());
+            System.out.println("Car returned: " + car.getMake() + " " + car.getModel());
         }
     }
 
@@ -101,7 +101,7 @@ public class CarService {
     public int getCarCount() {
         return cars.size();
     }
-    
+
     public List<Car> getCarsByOwner(Customer owner) {
         List<Car> ownedCars = new ArrayList<>();
         for (Car car : cars) {
@@ -111,17 +111,17 @@ public class CarService {
         }
         return ownedCars;
     }
-    
+
     public void removeCar(Car car) {
         cars.remove(car);
         saveCars();
     }
-    
+
     public void makeAvailable(Car car) {
         car.setAvailable(true);
         saveCars();
     }
-    
+
     public void makeNotAvailable(Car car) {
         car.setAvailable(false);
         saveCars();

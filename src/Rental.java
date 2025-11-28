@@ -68,7 +68,7 @@ public class Rental {
     @Override
     public String toString() {
         String status = isActive ? "Active" : "Completed";
-        return customer.getFullName() + " - " + car.getMakeModel() + 
-               " (" + rentalDate + ") - " + status;
+        return customer.getFullName() + " - " + car.getMake() + " " + car.getModel() +
+                " (" + rentalDate + ") - " + status;
     }
 }

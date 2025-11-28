@@ -7,7 +7,7 @@ public class Customer {
     private String phone;
     private String licenseNumber;
 
-    public Customer(String username, String password, String firstName, String lastName, 
+    public Customer(String username, String password, String firstName, String lastName,
                     String email, String phone, String licenseNumber) {
         this.username = username;
         this.password = password;

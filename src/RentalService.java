@@ -8,7 +8,7 @@ public class RentalService {
     public Rental createRental(Car car, Customer customer) {
         Rental rental = new Rental(car, customer, LocalDate.now());
         rentals.add(rental);
-        System.out.println("Rental created: " + customer.getFullName() + " rented " + car.getMakeModel());
+        System.out.println("Rental created: " + customer.getFullName() + " rented " + car.getMake() + " " + car.getModel());
         return rental;
     }
 
@@ -40,7 +40,7 @@ public class RentalService {
         }
         return customerRentals;
     }
-    
+
     public List<Rental> getActiveRentalsByCustomer(Customer customer) {
         List<Rental> activeCustomerRentals = new ArrayList<>();
         for (Rental rental : rentals) {
@@ -50,7 +50,7 @@ public class RentalService {
         }
         return activeCustomerRentals;
     }
-    
+
     public Rental findActiveRentalByCar(Car car) {
         for (Rental rental : rentals) {
             if (rental.isActive() && rental.getCar().equals(car)) {
