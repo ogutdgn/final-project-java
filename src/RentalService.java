@@ -13,12 +13,13 @@ public class RentalService {
     public void reconstructRentals() {
         rentals.clear();
         for (Car car : carService.getAllCars()) {
-            // If the car is NOT available and has a renter, it means it's currently rented
             if (!car.isAvailable() && car.getRenter() != null) {
-                // We create a new Rental object to track it.
-                // Note: Since we don't save the exact start date in this minimal version,
-                // we default to today (LocalDate.now()).
-                Rental rental = new Rental(car, car.getRenter(), LocalDate.now());
+                // Use the saved date if it exists, otherwise fallback to today
+                LocalDate date = (car.getRentDate() != null)
+                        ? car.getRentDate()
+                        : LocalDate.now();
+
+                Rental rental = new Rental(car, car.getRenter(), date);
                 rentals.add(rental);
             }
         }

@@ -467,6 +467,9 @@ public class MainFrame extends JFrame {
                     customerService.getLoggedInCustomer());
             Rental selectedRental = activeRentals.get(idx);
 
+            carService.returnCar(selectedRental.getCar());
+            rentalService.completeRental(selectedRental);
+
             rentalService.completeRental(selectedRental);
             updateAllTabs();
             showSuccess("Car returned successfully!");

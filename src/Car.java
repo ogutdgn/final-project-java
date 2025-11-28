@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 
 public class Car {
     private final String make;
@@ -8,7 +9,14 @@ public class Car {
     private boolean available;
     private Customer owner;
     private Customer renter;
+    private LocalDate rentDate;
 
+    public LocalDate getRentDate() {
+        return rentDate;
+    }
+    public void setRentDate(LocalDate rentDate) {
+        this.rentDate = rentDate;
+    }
     public Car(String make, String model, String plateNumber, int manufactureYear, int price) {
         this.make = make;
         this.model = model;

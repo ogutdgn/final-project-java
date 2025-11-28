@@ -65,6 +65,7 @@ public class CarService {
             if (car.isAvailable()) {
                 car.setAvailable(false);
                 car.setRenter(renter);
+                car.setRentDate(java.time.LocalDate.now());
                 saveCars();
                 System.out.println("Car rented: " + car.getMake() + " " + car.getModel());
                 return car;
@@ -80,8 +81,30 @@ public class CarService {
             Car car = cars.get(index);
             car.setAvailable(true);
             car.setRenter(null);
+            car.setRentDate(null);
             saveCars();
             System.out.println("Car returned: " + car.getMake() + " " + car.getModel());
+        }
+    }
+
+    public void returnCar(Car carToReturn) {
+        boolean found = false;
+        for (Car c : cars) {
+            // Check plate number to ensure we have the right car
+            if (c.getPlateNumber().equalsIgnoreCase(carToReturn.getPlateNumber())) {
+                c.setAvailable(true);
+                c.setRenter(null);
+                c.setRentDate(null);
+                found = true;
+                System.out.println("Car returned (found by plate): " + c.getPlateNumber());
+                break;
+            }
+        }
+
+        if (found) {
+            saveCars(); // Save changes to text file
+        } else {
+            System.err.println("Error: Could not find car with plate " + carToReturn.getPlateNumber() + " to return.");
         }
     }
 

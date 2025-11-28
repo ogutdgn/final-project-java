@@ -85,6 +85,7 @@ public class DataManager {
             for (Car car : cars) {
                 String ownerUsername = car.getOwner() != null ? car.getOwner().getUsername() : "NONE";
                 String renterUsername = car.getRenter() != null ? car.getRenter().getUsername() : "NONE";
+                String dateStr = (car.getRentDate() == null) ? "NONE" : DateUtil.formatDate(car.getRentDate());
 
                 writer.write(car.getMake() + "|" +
                         car.getModel() + "|" +
@@ -93,7 +94,8 @@ public class DataManager {
                         car.getPrice() + "|" +
                         car.isAvailable() + "|" +
                         ownerUsername + "|" +
-                        renterUsername);
+                        renterUsername+ "|" +
+                        dateStr);
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -124,6 +126,12 @@ public class DataManager {
                     carData.ownerUsername = parts.length > 6 && !parts[6].equals("NONE") ? parts[6] : null;
                     carData.renterUsername = parts.length > 7 && !parts[7].equals("NONE") ? parts[7] : null;
 
+                    if (parts.length > 8 && !parts[8].equals("NONE")) {
+                        carData.rentDate = parts[8];
+                    } else {
+                        carData.rentDate = null;
+                    }
+
                     carsData.add(carData);
                 }
             }
@@ -145,5 +153,6 @@ public class DataManager {
         public boolean available;
         public String ownerUsername;
         public String renterUsername;
+        public String rentDate;
     }
 }
