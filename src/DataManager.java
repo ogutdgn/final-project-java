@@ -5,6 +5,7 @@ import java.util.List;
 public class DataManager {
     private static final String USERS_FILE = "data/users.txt";
     private static final String CARS_FILE = "data/cars.txt";
+    private static final String RENTALS_FILE = "data/rentals.txt";
 
     static {
         File dataDir = new File("data");
@@ -144,6 +145,51 @@ public class DataManager {
         return carsData;
     }
 
+    public static void saveRentals(List<Rental> rentals) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RENTALS_FILE))) {
+            for (Rental rental : rentals) {
+                String returnDateStr = (rental.getReturnDate() == null) ? "NONE" : DateUtil.formatDate(rental.getReturnDate());
+
+                writer.write(rental.getCar().getPlateNumber() + "|" +
+                        rental.getCustomer().getUsername() + "|" +
+                        DateUtil.formatDate(rental.getRentalDate()) + "|" +
+                        returnDateStr + "|" +
+                        rental.getTotalCost() + "|" +
+                        rental.isActive());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving rentals: " + e.getMessage());
+        }
+    }
+
+    public static List<RentalData> loadRentals() {
+        List<RentalData> list = new ArrayList<>();
+        File file = new File(RENTALS_FILE);
+
+        if (!file.exists()) return list;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(RENTALS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6) {
+                    RentalData data = new RentalData();
+                    data.plateNumber = parts[0];
+                    data.username = parts[1];
+                    data.rentalDate = parts[2];
+                    data.returnDate = parts[3];
+                    data.totalCost = Double.parseDouble(parts[4]);
+                    data.isActive = Boolean.parseBoolean(parts[5]);
+                    list.add(data);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error loading rentals: " + e.getMessage());
+        }
+        return list;
+    }
+
     public static class CarData {
         public String make;
         public String model;
@@ -154,5 +200,13 @@ public class DataManager {
         public String ownerUsername;
         public String renterUsername;
         public String rentDate;
+    }
+    public static class RentalData {
+        public String plateNumber;
+        public String username;
+        public String rentalDate;
+        public String returnDate;
+        public double totalCost;
+        public boolean isActive;
     }
 }

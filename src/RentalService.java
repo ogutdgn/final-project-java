@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RentalService {
     private ArrayList<Rental> rentals = new ArrayList<>();
@@ -10,22 +11,45 @@ public class RentalService {
         this.carService = carService;
     }
 
-    public void reconstructRentals() {
-        rentals.clear();
-        for (Car car : carService.getAllCars()) {
-            if (!car.isAvailable() && car.getRenter() != null) {
-                // Use the saved date if it exists, otherwise fallback to today
-                LocalDate date = (car.getRentDate() != null)
-                        ? car.getRentDate()
-                        : LocalDate.now();
 
-                Rental rental = new Rental(car, car.getRenter(), date);
+    public void loadRentals(Map<String, Customer> customerMap) {
+        rentals.clear();
+        List<DataManager.RentalData> dataList = DataManager.loadRentals();
+        List<Car> allCars = carService.getAllCars();
+
+        for (DataManager.RentalData data : dataList) {
+            // 1. Find Customer
+            Customer customer = customerMap.get(data.username);
+
+            // 2. Find Car
+            Car car = null;
+            for (Car c : allCars) {
+                if (c.getPlateNumber().equalsIgnoreCase(data.plateNumber)) {
+                    car = c;
+                    break;
+                }
+            }
+
+            // 3. Reconstruct Object
+            if (customer != null && car != null) {
+                LocalDate rentDate = DateUtil.parseDate(data.rentalDate);
+                Rental rental = new Rental(car, customer, rentDate);
+
+                rental.setActive(data.isActive);
+                rental.setTotalCost(data.totalCost);
+
+                if (!data.returnDate.equals("NONE")) {
+                    rental.setReturnDate(DateUtil.parseDate(data.returnDate));
+                }
+
                 rentals.add(rental);
             }
         }
     }
 
-
+    private void saveRentals() {
+        DataManager.saveRentals(rentals);
+    }
 
 
     public Rental createRental(Car car, Customer customer) {
@@ -36,6 +60,8 @@ public class RentalService {
 
         Rental rental = new Rental(car, customer, LocalDate.now());
         rentals.add(rental);
+
+        saveRentals();
 
         System.out.println("Rental created: " + customer.getFullName() + " rented " + car.getMake() + " " + car.getModel());
         return rental;
@@ -48,6 +74,8 @@ public class RentalService {
         Car car = rental.getCar();
         car.setAvailable(true);
         car.setRenter(null);
+
+        saveRentals();
     }
 
     public List<Rental> getAllRentals() {

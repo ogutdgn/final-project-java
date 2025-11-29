@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
     private final CarService carService = new CarService();
@@ -7,7 +10,6 @@ public class MainFrame extends JFrame {
     private final RentalService rentalService = new RentalService(carService);
 
     private JLabel userLabel;
-
     private JButton loginBtn;
 
     private final DefaultListModel<String> rentListModel = new DefaultListModel<>();
@@ -48,7 +50,7 @@ public class MainFrame extends JFrame {
         carService.setCustomerMap(customerMap);
         carService.loadCars();
 
-        rentalService.reconstructRentals();
+        rentalService.loadRentals(customerMap);
 
         if (carService.getCarCount() == 0) {
             carService.addCar("Toyota", "Corolla", "ABC-1234", 2020, 60);
@@ -425,15 +427,17 @@ public class MainFrame extends JFrame {
             }
 
             Car selectedCar = rentableCars.get(idx);
-
             if (!selectedCar.isAvailable()) {
                 showError("This car is no longer available!");
                 updateAllTabs();
                 return;
             }
 
-            int carIndex = carService.getAllCars().indexOf(selectedCar);
+            if (!processPayment(selectedCar)) {
+                return;
+            }
 
+            int carIndex = carService.getAllCars().indexOf(selectedCar);
             Car rentedCar = carService.rentCar(carIndex, customerService.getLoggedInCustomer());
 
             rentalService.createRental(rentedCar, customerService.getLoggedInCustomer());
@@ -448,6 +452,57 @@ public class MainFrame extends JFrame {
             ex.printStackTrace();
             updateAllTabs();
         }
+    }
+
+    private boolean processPayment(Car car) {
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+
+        JLabel header = new JLabel("Daily Rate: $" + car.getPrice());
+        header.setFont(new Font("Arial", Font.BOLD, 14));
+        header.setForeground(new Color(41, 128, 185)); // Blue color
+        panel.add(header);
+
+        panel.add(new JLabel("Card Number:"));
+        JTextField cardField = new JTextField(16);
+        panel.add(cardField);
+
+        JPanel row = new JPanel(new GridLayout(1, 2, 5, 0));
+        row.add(new JLabel("Expiry (MM/YY):"));
+        row.add(new JLabel("CVV:"));
+        panel.add(row);
+
+        JPanel rowFields = new JPanel(new GridLayout(1, 2, 5, 0));
+        JTextField expiryField = new JTextField(5);
+        JTextField cvvField = new JTextField(3);
+        rowFields.add(expiryField);
+        rowFields.add(cvvField);
+        panel.add(rowFields);
+
+        int result = JOptionPane.showConfirmDialog(this, panel,
+                "Secure Payment Information", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String card = cardField.getText().trim();
+            String expiry = expiryField.getText().trim();
+            String cvv = cvvField.getText().trim();
+
+            if (card.isEmpty() || expiry.isEmpty() || cvv.isEmpty()) {
+                showError("Payment Failed: All payment fields are required.");
+                return false;
+            }
+
+            //format checker
+            if (!card.matches("\\d+") || !cvv.matches("\\d+")) {
+                showError("Payment Failed: Card and CVV must countain only numbers.");
+                return false;
+            }
+
+            //process payment
+            JOptionPane.showMessageDialog(this, "Processing Payment...", "Please Wait", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+
+        return false; // User cancelled
     }
 
     private void handleReturnCar() {
@@ -469,9 +524,11 @@ public class MainFrame extends JFrame {
 
             carService.returnCar(selectedRental.getCar());
             rentalService.completeRental(selectedRental);
-
-            rentalService.completeRental(selectedRental);
             updateAllTabs();
+
+            // 3. SHOW THE INVOICE (This is the new transaction part)
+            showInvoice(selectedRental);
+
             showSuccess("Car returned successfully!");
         } catch (Exception ex) {
             showError("Error returning car: " + ex.getMessage());
@@ -505,6 +562,48 @@ public class MainFrame extends JFrame {
                 loginBtn.setText("🔓 Logout"); // ← UPDATE BUTTON TEXT
             }
         }
+    }
+
+    private void showInvoice(Rental rental) {
+        // Calculate days between rent date and return date
+        long days = java.time.temporal.ChronoUnit.DAYS.between(
+                rental.getRentalDate(),
+                rental.getReturnDate()
+        );
+
+        if (days < 1) days = 1; // Minimum charge is 1 day
+
+        double totalCost = rental.getTotalCost();
+
+        // Format the invoice text
+        String invoice = String.format("""
+            ==================================
+                       PAYMENT INVOICE
+            ==================================
+            Customer:   %s
+            Car:        %s %s
+            Plate:      %s
+            ----------------------------------
+            Rent Date:  %s
+            Return Date:%s
+            Days Rented:%d
+            Rate:       $%d/day
+            ----------------------------------
+            TOTAL DUE:  $%.2f
+            ==================================
+            """,
+                rental.getCustomer().getFullName(),
+                rental.getCar().getMake(), rental.getCar().getModel(),
+                rental.getCar().getPlateNumber(),
+                rental.getRentalDate(),
+                rental.getReturnDate(),
+                days,
+                rental.getCar().getPrice(),
+                totalCost
+        );
+
+        // Show the popup
+        JOptionPane.showMessageDialog(this, new JTextArea(invoice), "Payment Due", JOptionPane.INFORMATION_MESSAGE);
     }
 
 
