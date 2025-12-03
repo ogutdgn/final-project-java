@@ -21,10 +21,10 @@ public enum CarMake {
     @Override
     public String toString() {
         if (this == Other) {
-            return ""; // <-- show blank option for "Other"
+            return ""; 
         }
 
-        // Convert enum name to display name
+        
         String name = name().replace("_", "-");
         String[] parts = name.split("-");
         StringBuilder display = new StringBuilder();
@@ -33,7 +33,7 @@ public enum CarMake {
                     .append(part.substring(1).toLowerCase())
                     .append("-");
         }
-        display.setLength(display.length() - 1); // remove last dash
+        display.setLength(display.length() - 1); 
         return display.toString();
     }
 

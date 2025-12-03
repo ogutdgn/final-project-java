@@ -238,9 +238,9 @@ public class MainFrame extends JFrame {
                 String make = "";
 
                 if (sel instanceof CarMake) {
-                    make = ((CarMake) sel).toString();  // predefined enum
+                    make = ((CarMake) sel).toString();  
                 } else if (sel != null) {
-                    make = sel.toString();              // user-typed string
+                    make = sel.toString();          
                 }
 
                 String model = modelField.getText().trim();
@@ -255,7 +255,6 @@ public class MainFrame extends JFrame {
 
                 carService.addCar(make, model, plate, year, price, customerService.getLoggedInCustomer());
 
-                // Reset after adding
                 makeBox.setSelectedIndex(0);
                 modelField.setText("");
                 plateField.setText("");
@@ -401,7 +400,7 @@ public class MainFrame extends JFrame {
 
         JLabel header = new JLabel("Daily Rate: $" + car.getPrice());
         header.setFont(new Font("Arial", Font.BOLD, 14));
-        header.setForeground(new Color(41, 128, 185)); // Blue color
+        header.setForeground(new Color(41, 128, 185)); 
         panel.add(header);
 
         panel.add(new JLabel("Card Number:"));
@@ -468,7 +467,7 @@ public class MainFrame extends JFrame {
             rentalService.completeRental(selectedRental);
             updateAllTabs();
 
-            // 3. SHOW THE INVOICE (This is the new transaction part)
+           
             showInvoice(selectedRental);
 
             showSuccess("Car returned successfully!");
@@ -489,7 +488,7 @@ public class MainFrame extends JFrame {
                 customerService.logout();
                 updateUserLabel();
                 updateAllTabs();
-                loginBtn.setText("👤 Login");  // ← UPDATE BUTTON TEXT
+                loginBtn.setText("👤 Login");  
                 showSuccess("Logged out successfully!");
             }
 
@@ -501,7 +500,7 @@ public class MainFrame extends JFrame {
             updateAllTabs();
 
             if (customerService.isLoggedIn()) {
-                loginBtn.setText("🔓 Logout"); // ← UPDATE BUTTON TEXT
+                loginBtn.setText("🔓 Logout"); 
             }
         }
     }
