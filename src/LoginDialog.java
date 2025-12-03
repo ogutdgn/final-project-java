@@ -99,6 +99,7 @@ public class LoginDialog extends JDialog {
         loginPanel.add(passwordField, gbc);
 
         gbc.gridy = 4;
+        gbc.weighty = 0;
         gbc.insets = new Insets(20, 30, 10, 30);
         JButton loginBtn = createStyledButton("Login", new Color(46, 204, 113));
         loginBtn.addActionListener(e -> handleLogin());
@@ -106,7 +107,8 @@ public class LoginDialog extends JDialog {
 
         gbc.gridy = 5;
         gbc.weighty = 1.0;
-        loginPanel.add(Box.createVerticalStrut(20), gbc);
+        gbc.fill = GridBagConstraints.BOTH;
+        loginPanel.add(new JPanel(), gbc);
     }
 
     private void createRegisterPanel() {
@@ -163,6 +165,7 @@ public class LoginDialog extends JDialog {
         registerPanel.add(licenseField, gbc);
 
         gbc.gridy = row++;
+        gbc.weighty = 0;
         gbc.insets = new Insets(20, 30, 20, 30);
         JButton signUpBtn = createStyledButton("Sign Up", new Color(155, 89, 182));
         signUpBtn.addActionListener(e -> handleRegister(
@@ -178,7 +181,8 @@ public class LoginDialog extends JDialog {
 
         gbc.gridy = row++;
         gbc.weighty = 1.0;
-        registerPanel.add(Box.createVerticalStrut(20), gbc);
+        gbc.fill = GridBagConstraints.BOTH;
+        registerPanel.add(new JPanel(), gbc);
     }
 
     private JLabel createLabel(String text) {
@@ -192,8 +196,9 @@ public class LoginDialog extends JDialog {
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBackground(bgColor);
         button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
+        button.setOpaque(true);
         button.setBorderPainted(false);
+        button.setFocusPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setPreferredSize(new Dimension(200, 40));
 
@@ -215,11 +220,11 @@ public class LoginDialog extends JDialog {
 
         try {
             loggedInCustomer = customerService.login(username, password);
-            JOptionPane.showMessageDialog(this,
+            dispose();
+            JOptionPane.showMessageDialog(getParent(),
                     "Welcome back, " + loggedInCustomer.getFullName() + "!",
                     "Login Successful",
                     JOptionPane.INFORMATION_MESSAGE);
-            dispose();
         } catch (InvalidInputException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Login Failed", JOptionPane.ERROR_MESSAGE);
         }
@@ -231,11 +236,11 @@ public class LoginDialog extends JDialog {
             customerService.registerCustomer(username, password, firstName,
                     lastName, email, phone, license);
             loggedInCustomer = customerService.login(username, password);
-            JOptionPane.showMessageDialog(this,
+            dispose();
+            JOptionPane.showMessageDialog(getParent(),
                     "Account created successfully!\nWelcome, " + loggedInCustomer.getFullName() + "!",
                     "Registration Successful",
                     JOptionPane.INFORMATION_MESSAGE);
-            dispose();
         } catch (InvalidInputException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Registration Failed", JOptionPane.ERROR_MESSAGE);
         }

@@ -183,7 +183,7 @@ public class MainFrame extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         JComboBox<CarMake> makeBox = new JComboBox<>(CarMake.values());
-        JComboBox<String> modelBox = new JComboBox<>();
+        JTextField modelField = new JTextField(25);
         JTextField plateField = new JTextField(25);
         JTextField yearField = new JTextField(25);
         JTextField priceField = new JTextField(25);
@@ -199,7 +199,7 @@ public class MainFrame extends JFrame {
         gbc.gridx = 0;
         panel.add(createLabel("Model:"), gbc);
         gbc.gridx = 1;
-        panel.add(modelBox, gbc);
+        panel.add(modelField, gbc);
 
         gbc.gridy = row++;
         gbc.gridx = 0;
@@ -226,57 +226,6 @@ public class MainFrame extends JFrame {
         JButton addBtn = createStyledButton("Add Car", new Color(155, 89, 182));
         addBtn.setPreferredSize(new Dimension(200, 45));
 
-        // Populate modelBox when make changes
-// When make changes
-        makeBox.addActionListener(e -> {
-            modelBox.removeAllItems();
-
-            Object sel = makeBox.getSelectedItem();
-            CarMake selected = sel instanceof CarMake ? (CarMake) sel : null;
-
-            if (selected != null) {
-                if (selected == CarMake.Other) {
-                    makeBox.setEditable(true);
-                    modelBox.setEditable(true);
-                    modelBox.addItem(""); // blank option for custom model
-                } else {
-                    makeBox.setEditable(false);
-
-                    // Add all predefined models
-                    for (String m : selected.getModels()) {
-                        modelBox.addItem(m);
-                    }
-
-                    // Add blank at top so user can type a new model
-                    modelBox.insertItemAt("", 0);
-                    modelBox.setSelectedIndex(0);
-
-                    // Editable only if blank selected
-                    modelBox.setEditable(true);
-                }
-            } else {
-                makeBox.setEditable(true);
-                modelBox.setEditable(true);
-                modelBox.addItem(""); // fallback
-            }
-        });
-
-// Single listener for modelBox to lock typing on predefined models
-        modelBox.addActionListener(e -> {
-            Object item = modelBox.getSelectedItem();
-            if (item != null && !"".equals(item.toString())) {
-                modelBox.setEditable(false); // lock if not blank
-            } else {
-                modelBox.setEditable(true);  // editable if blank
-            }
-        });
-
-
-
-
-
-        JTextField customMake = new JTextField(25);
-        JTextField customModel = new JTextField(25);
         addBtn.addActionListener(e -> {
             if (!customerService.isLoggedIn()) {
                 showError("Please login first to add a car!");
@@ -294,15 +243,7 @@ public class MainFrame extends JFrame {
                     make = sel.toString();              // user-typed string
                 }
 
-
-                String model;
-                if (modelBox.isEditable()) {
-                    // user typed a custom model for "Other"
-                    model = modelBox.getEditor().getItem().toString().trim();
-                } else {
-                    model = (String) modelBox.getSelectedItem();
-                }
-
+                String model = modelField.getText().trim();
                 String plate = plateField.getText().trim();
                 int year = Integer.parseInt(yearField.getText().trim());
                 int price = Integer.parseInt(priceField.getText().trim());
@@ -315,8 +256,8 @@ public class MainFrame extends JFrame {
                 carService.addCar(make, model, plate, year, price, customerService.getLoggedInCustomer());
 
                 // Reset after adding
-                modelBox.removeAllItems();
                 makeBox.setSelectedIndex(0);
+                modelField.setText("");
                 plateField.setText("");
                 yearField.setText("");
                 priceField.setText("");
@@ -380,8 +321,9 @@ public class MainFrame extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBackground(bgColor);
         button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
+        button.setOpaque(true);
         button.setBorderPainted(false);
+        button.setFocusPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setPreferredSize(new Dimension(200, 40));
 

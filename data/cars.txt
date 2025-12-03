@@ -5,3 +5,4 @@ Mercedes-Benz|C-Class|MER-3456|2021|150|true|NONE|john_doe|NONE
 Nissan|Sentra|AMD2143|2010|50|true|NONE|NONE|NONE
 Volkswagen|Jetta|POL2021|2021|67|true|NONE|NONE|NONE
 Jeep|Wrangler|JWR1234|2025|90|true|john_doe|NONE|NONE
+Toyota|prius|12313|2008|135|true|ogutdgn|NONE|NONE
